@@ -1,8 +1,8 @@
 
-module aludec(input wire opb5,         output wire[2:0] ALUControl
+module aludec(input wire opb5,         output reg[2:0] ALUControl,
               input wire[2:0] funct3,
               input wire funct7b5,
-              input wire[1:0] ALUOp,
+              input wire[1:0] ALUOp
 );
     wire RtypeSub;
     assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract

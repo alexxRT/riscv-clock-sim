@@ -9,9 +9,19 @@ module controller(input wire[6:0] op,       output wire[1:0] ResultSrc,
     wire[1:0] ALUOp;
     wire Branch;
 
-    maindec md(op, ResultSrc, MemWrite, Branch, ALUSrc, RegWrite, Jump, ImmSrc, ALUOp);
+    maindec md(.op(op),
+                .ResultSrc(ResultSrc),
+                .MemWrite(MemWrite),
+                .Branch(Branch),
+                .ALUSrc(ALUSrc),
+                .RegWrite(RegWrite),
+                .Jump(Jump),
+                .ImmSrc(ImmSrc),
+                .ALUOp(ALUOp)
+    );
 
-    aludec ad(op[5], funct3, funct7b5, ALUOp, ALUControl);
+    aludec ad(.opb5(op[5]), .funct3(funct3), .funct7b5(funct7b5), .ALUOp(ALUOp),
+              .ALUControl(ALUControl));
 
     assign PCSrc = Branch & Zero | Jump; // control signal for next PC source
 endmodule

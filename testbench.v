@@ -7,10 +7,10 @@ module testbench();
     wire MemWrite;
 
     // instantiate device to be tested
-    top dut(.clk(clk), .reset(reset),
-            .WriteData(WriteData),
-            .DataAdr(DataAdr),
-            .MemWrite(MemWrite));
+    top testdevice(.clk(clk), .reset(reset),
+                   .WriteData(WriteData),
+                   .DataAdr(DataAdr),
+                   .MemWrite(MemWrite));
 
     // initialize test
     initial

@@ -1,4 +1,4 @@
-module extend(input wire[31:7] instr, output wire[31:0] immext,
+module extend(input wire[31:7] instr, output reg[31:0] immext,
               input wire[1:0]  immsrc);
     always @ (*) begin
         case(immsrc)

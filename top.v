@@ -1,6 +1,6 @@
 
 module top(input wire clk,           output wire[31:0] WriteData,
-           input wire reset,         output wire[31:0] DataAdr
+           input wire reset,         output wire[31:0] DataAdr,
                                      output wire MemWrite);
 
     wire[31:0] PC;
@@ -10,8 +10,8 @@ module top(input wire clk,           output wire[31:0] WriteData,
     // instantiate processor and memories
     riscvsingle rvsingle(.clk(clk), .reset(reset), .Instr(Instr), .ReadData(ReadData),
                         .PC(PC),
+                        .ALUResult(DataAdr),
                         .MemWrite(MemWrite),
-                        .DataAdr(DataAdr),
                         .WriteData(WriteData));
 
     // intstantiate both memories - instr and data

@@ -10,9 +10,12 @@ module datapath(input wire clk,              output wire[31:0] ALUResult,
                 input wire[31:0] ReadData
 );
 
-    wire[31:0] PCNext, PCPlus4, PCTarget;
+    wire[31:0] PCNext;
+    wire[31:0] PCPlus4;
+    wire[31:0] PCTarget;
     wire[31:0] ImmExt;
-    wire[31:0] SrcA, SrcB;
+    wire[31:0] SrcA;
+    wire[31:0] SrcB;
     wire[31:0] Result;
 
 
