@@ -1,11 +1,14 @@
 
 
-module flopr #(parameter WIDTH = 8)
-                (input clk,                output logic [WIDTH−1:0] q,
-                input reset,
-                input wire[WIDTH−1:0] d
+module flopr (input clk,                output reg[31:0] q,
+              input reset,
+              input wire[31:0] d
 );
 
-always_ff @(posedge clk, posedge reset)
-    q <= reset ? 0 : d;
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= d;
+    end
 endmodule

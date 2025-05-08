@@ -2,12 +2,15 @@ module testbench();
 
     reg clk = 1'b0;
     reg reset;
-    reg[31:0] WriteData;
-    reg[31:0] DataAdr;
-    reg MemWrite;
+    wire[31:0] WriteData;
+    wire[31:0] DataAdr;
+    wire MemWrite;
 
     // instantiate device to be tested
-    top dut(clk, reset, WriteData, DataAdr, MemWrite);
+    top dut(.clk(clk), .reset(reset),
+            .WriteData(WriteData),
+            .DataAdr(DataAdr),
+            .MemWrite(MemWrite));
 
     // initialize test
     initial
@@ -18,7 +21,7 @@ module testbench();
     // generate clock to sequence tests
     always
         begin
-            clk = ~clk; #5;
+            clk <= ~clk; #5;
         end
 
     // check results
@@ -33,5 +36,7 @@ module testbench();
                     $stop;
                 end
             end
-    end
+        end
+
+
 endmodule

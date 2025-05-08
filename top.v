@@ -1,17 +1,23 @@
 
-module top(input clk,           output wire[31:0] WriteData,
-           input reset,         output wire[31:0] DataAdr
-                                output MemWrite);
+module top(input wire clk,           output wire[31:0] WriteData,
+           input wire reset,         output wire[31:0] DataAdr
+                                     output wire MemWrite);
 
-    reg[31:0] PC = 32'b0;
-    reg[31:0] Instr = 32'b0;
-    reg[31:0] ReadData = 32'b0;
+    wire[31:0] PC;
+    wire[31:0] Instr;
+    wire[31:0] ReadData;
 
     // instantiate processor and memories
-    riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
+    riscvsingle rvsingle(.clk(clk), .reset(reset), .Instr(Instr), .ReadData(ReadData),
+                        .PC(PC),
+                        .MemWrite(MemWrite),
+                        .DataAdr(DataAdr),
+                        .WriteData(WriteData));
 
-    imem imem(PC, Instr);
+    // intstantiate both memories - instr and data
+    imem imem(.a(PC), .rd(Instr));
 
-    dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
+    dmem dmem(.clk(clk), .we(MemWrite), .a(DataAdr),
+              .wd(WriteData), .rd(ReadData));
 
 endmodule
