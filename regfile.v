@@ -7,6 +7,10 @@ module regfile(input wire clk,       output wire[31:0] rd1,
 
     reg[31:0] REG[31:0];
 
+    initial begin
+        REG[0] = 32'b0;
+    end
+
     assign rd1 = REG[a1];
     assign rd2 = REG[a2];
 

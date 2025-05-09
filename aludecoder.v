@@ -9,8 +9,8 @@ module aludec(input wire opb5,         output reg[2:0] ALUControl,
 
     always @(*) begin
         case(ALUOp)
-            2'b00: ALUControl = 3'b000; // addition
-            2'b01: ALUControl = 3'b001; // subtraction
+            2'b00: ALUControl = 3'b000; // addition on lw, sw
+            2'b01: ALUControl = 3'b001; // subtraction on check a == b
             default: case(funct3) // R–type or I–type ALU
                 3'b000: if (RtypeSub)
                     ALUControl = 3'b001; // sub
