@@ -34,4 +34,16 @@ datapath dp(.clk(clk), .Instr(Instr), .ReadData(ReadData), .reset(reset), .Resul
             .WriteData(WriteData)
             );
 
+
+hazard unit(.Rs1E(),             .ForwardAE(),
+            .Rs2E(),             .ForwardBE(),
+            .RdE(),              .lwStall(),
+            .Rs1D(),             .StallF(),
+            .Rs2D(),             .FlushE(),
+            .RegWriteW(),        .StallD(),
+            .RegWriteM(),        .FlushD(),
+            .ResultSrcE(),
+            .PCSrcE());
+
+
 endmodule
