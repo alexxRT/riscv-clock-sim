@@ -11,8 +11,8 @@ module rexe(input wire clk,               output wire RegWriteE,
             input wire[31:0] PCD,         output wire[4:0] Rs1E,
             input wire[4:0] Rs1D,         output wire[4:0] Rs2E,
             input wire[4:0] Rs2D,         output wire[4:0] RdE,
-            input wire[4:0] RdD,          output wire[24:0] ImmExtE,
-            input wire[24:0] ImmExtD,     output wire[31:0] PCPlus4E,
+            input wire[4:0] RdD,          output wire[31:0] ImmExtE,
+            input wire[31:0] ImmExtD,     output wire[31:0] PCPlus4E,
             input wire[31:0] PCPlus4D,
             input wire reset
 );

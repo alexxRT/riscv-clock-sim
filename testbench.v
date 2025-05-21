@@ -12,16 +12,9 @@ module testbench();
     wire Zero;
 
     // instantiate device to be tested
-    top testdevice(.clk(clk), .reset(reset),
-                   .PC(PC),
-                   .Instr(Instr),
-                   .WriteData(WriteData),
-                   .DataAdr(DataAdr),
-                   .Zero(Zero),
-                   .Jump(Jump),
-                   .PCSrc(PCSrc),
-                   .MemWrite(MemWrite));
-
+    top testdevice(.clk(clk), .WriteDataM(WriteData),
+                              .ALUResultM(DataAdr)
+    );
     // initialize test
     initial begin
         reset = 1; #22; reset = 0;
