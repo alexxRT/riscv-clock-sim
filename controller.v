@@ -1,6 +1,6 @@
 module controller(input wire[6:0] op,       output wire[1:0] ResultSrc,
                   input wire[2:0] funct3,   output wire MemWrite,
-                  input wire funct7b5,      output wire PCSrc,
+                  input wire funct7b5,
                                             output wire ALUSrc,
                                             output wire RegWrite,
                                             output wire Jump,

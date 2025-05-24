@@ -15,8 +15,8 @@ module rmem(input wire clk,                  output wire RegWriteM,
                MemWriteM, ALUResultM, RdM, PCPlus4M} = q;
 
     always @(posedge clk) begin
-        q <= {RegWriteE, ResultSrcE, WriteDataE,
-               MemWriteE, ALUResultE, RdE, PCPlus4E};
+            q <= {RegWriteE, ResultSrcE, WriteDataE,
+                  MemWriteE, ALUResultE, RdE, PCPlus4E};
     end
 
 

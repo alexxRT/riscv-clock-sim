@@ -24,7 +24,7 @@ module hazard(input wire[4:0] Rs1E,  output reg[1:0] ForwardAE,
     // forward branch  execution
     always @(*) begin
         if ((Rs2E == RdM) && RegWriteM && Rs2E != 0)
-            ForwardAE = 2'b10;
+            ForwardBE = 2'b10;
         else if ((Rs2E == RdW) && RegWriteW && Rs2E != 0)
             ForwardBE = 2'b01;
         else
@@ -32,7 +32,7 @@ module hazard(input wire[4:0] Rs1E,  output reg[1:0] ForwardAE,
     end
 
 
-    assign lwStall = ResultSrcE && ((Rs1D == RdE) || (Rs2D == RdE));
+    assign lwStall = ResultSrcE[0] & ((Rs1D == RdE) | (Rs2D == RdE));
     assign StallD = lwStall;
     assign StallF = lwStall;
 

@@ -1,23 +1,18 @@
 module testbench();
 
     reg clk = 1'b0;
-    reg reset;
     wire[31:0] WriteData;
     wire[31:0] DataAdr;
-    wire[31:0] PC;
-    wire[31:0] Instr;
-    wire MemWrite;
-    wire Jump;
-    wire PCSrc;
-    wire Zero;
+    reg reset;
 
     // instantiate device to be tested
-    top testdevice(.clk(clk), .WriteDataM(WriteData),
-                              .ALUResultM(DataAdr)
+    top testdevice(.clk(clk),      .WriteDataM(WriteData),
+                   .reset(reset),  .ALUResultM(DataAdr)
     );
+
     // initialize test
     initial begin
-        reset = 1; #22; reset = 0;
+        reset = 1; #17; reset = 0;
     end
 
     // generate clock to sequence tests
@@ -25,22 +20,12 @@ module testbench();
         clk <= ~clk; #5;
     end
 
-    // check results
-    always @(negedge clk) begin
-        if(MemWrite) begin
-            if(DataAdr === 100 & WriteData === 25) begin
-                $display("Simulation succeeded");
-            end else if (DataAdr !== 96) begin
-                $display("Simulation failed");
-            end
-        end
-    end
-
 
     initial begin
         $dumpvars;
         $display("Test started...");
-        #1000 $finish;
+        #1000
+        $finish;
     end
 
 
