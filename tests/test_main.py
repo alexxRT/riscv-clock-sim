@@ -5,7 +5,7 @@ import configparser
 import pytest
 
 config = configparser.ConfigParser()
-config.read("./config.cfg")
+config.read("./setup.cfg")
 
 INSTR_FILE_NAME = config["device"]["instr_input"]
 REG_RESULT_1 = config["device"]["reg_1"]

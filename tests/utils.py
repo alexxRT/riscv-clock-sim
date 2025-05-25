@@ -13,6 +13,7 @@ def convert_decimal_signed(num: str):
 
     if (num == 'x'):
         print(f"Invalid number format when convert: num={num}")
+        assert False
 
     num = '0'*(bit_len - len(num)) + num
     signed_bit = num[0]
@@ -106,7 +107,7 @@ def gen_instrtxt(instr: str, instr_file: str):
             case "jal":
                 # res x5 = 8
                 i.write("00400293\n") # 00: addi x5 x0 4
-                i.write("008002EF\n") # 04: jal x5 8
+                i.write("008003EF\n") # 04: jal x7 8
                 i.write("00428293\n") # 08: addi x5 x5 4 shouldn't execute
                 i.write("00428293\n") # 0C: addi x5 x5 4
                 write_result = "\n".join(["00028293"]*10) # addi x5 x5 0
