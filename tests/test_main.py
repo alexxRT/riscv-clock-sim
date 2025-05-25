@@ -36,7 +36,7 @@ def test_main(test: str, res: tuple):
         result = (memory_event == res)
 
     if CLEAN:
-        run(["rm", "riscvtest.txt"])
+        run(["rm", f"{INSTR_FILE_NAME}"])
         run(["rm", "dump.vcd"])
 
     assert result
