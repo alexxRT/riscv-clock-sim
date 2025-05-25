@@ -31,7 +31,7 @@ CLEAN = config.getboolean("run", "clean")
 def test_instructions(instr: str, res: tuple):
     gen_instrtxt(instr, INSTR_FILE_NAME)
 
-    run(["chmod", "777", f"{INSTR_FILE_NAME}""{TARGET_BIN}"])
+    run(["chmod", "777", f"{TARGET_BIN}"])
     run([f"{TARGET_BIN}"])
 
     signals = read_signals("dump.vcd")
