@@ -13,6 +13,7 @@ def convert_decimal_signed(num: str):
 
     if (num == 'x'):
         print(f"Invalid number format when convert: num={num}")
+        assert False
 
     num = '0'*(bit_len - len(num)) + num
     signed_bit = num[0]
