@@ -19,7 +19,10 @@ module top(input wire clk,     output wire[7:0] SEG,
     wire[31:0] ResultW;
     wire[4:0] RdW;
 
-    display disp(.clk(clk), .word(PC), .AN(AN), .SEG(SEG));
+    wire[31:0] dispword;
+
+    nextword nw(.clk(clk), .word1(PC), .word2(InstrF), .next(dispword));
+    display disp(.clk(clk), .word(dispword), .AN(AN), .SEG(SEG));
 
     // instantiate processor and memories
     riscvsingle rvsingle(.clk(clk),              .RegWriteM(RegWriteM),
