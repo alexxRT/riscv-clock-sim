@@ -1,14 +1,10 @@
 module testbench();
 
     reg clk = 1'b0;
-    wire[31:0] WriteData;
-    wire[31:0] DataAdr;
     reg reset;
 
     // instantiate device to be tested
-    top testdevice(.clk(clk),      .WriteDataM(WriteData),
-                   .reset(reset),  .ALUResultM(DataAdr)
-    );
+    top testdevice(.clk(clk), .reset(reset));
 
     // initialize test
     initial begin

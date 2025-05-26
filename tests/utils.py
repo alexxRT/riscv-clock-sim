@@ -1,8 +1,5 @@
-
 import vcdvcd as vcd
 from pathlib import Path
-from collections import defaultdict
-
 
 def convert_decimal_signed(num: str):
     bit_len = 32
@@ -12,8 +9,8 @@ def convert_decimal_signed(num: str):
         assert False
 
     if (num == 'x'):
-        print(f"Invalid number format when convert: num={num}")
-        assert False
+        # print(f"Invalid number format when convert: num={num}")
+        return 'x'
 
     num = '0'*(bit_len - len(num)) + num
     signed_bit = num[0]
@@ -24,26 +21,44 @@ def convert_decimal_signed(num: str):
 
     return dec_value
 
-def get_last_memory_event(mem_write: list, mem_data: list, mem_addr: list):
+
+def signal_expand(signal: list, expand_len: int = None) -> list:
+    expand_len = signal[-1][0] if expand_len is None else expand_len
+    signal_expanded = []
+
+    def iterate_next(lst: list):
+        for i in range(len(lst)):
+            current = lst[i]
+            next_elem = lst[i + 1] if i + 1 < len(lst) else None
+            yield current, next_elem
+
+    for sig_cur, sig_next in iterate_next(signal):
+        i = sig_cur[0]
+        while sig_next is not None and i < sig_next[0]:
+            signal_expanded.append(convert_decimal_signed(sig_cur[1]))
+            i += 1
+
+    padding_len = expand_len - len(signal_expanded) if len(signal_expanded) < expand_len else 0
+    signal_expanded.extend([convert_decimal_signed(sig_cur[1])] * padding_len)
+
+    return signal_expanded
+
+def get_last_write_event(sig_write: list, sig_data: list, sig_addr: list):
     ts = 0
     wr = 0
     data = 0
     addr = 0
-    for w in reversed(mem_write):
-        if w[1] == '1':
-            ts = int(w[0])
-            wr = 1
+
+    expand_len = max(sig_write[-1][0], sig_data[-1][0], sig_addr[-1][0])
+
+    for w_ts, w in enumerate(reversed(signal_expand(sig_write, expand_len))):
+        if w == 1:
+            ts = w_ts
+            wr = w
             break
 
-    for d in reversed(mem_data):
-        if int(d[0]) == ts:
-            data = convert_decimal_signed(d[1])
-            break
-
-    for a in reversed(mem_addr):
-        if int(a[0]) == ts:
-            addr = convert_decimal_signed(a[1])
-            break
+    data = signal_expand(sig_data, expand_len)[::-1][ts]
+    addr = signal_expand(sig_addr, expand_len)[::-1][ts]
 
     return (wr, data, addr)
 
@@ -51,9 +66,9 @@ def get_last_memory_event(mem_write: list, mem_data: list, mem_addr: list):
 input:
     signals: Path - path to raw .vcd file after simulation
 output:
-    tree: defaultdict - structuraly organized signals in tree-like style
+    tree: defaultdict - structuraly organized signals dictinary
 """
-def read_signals(signals: Path) -> defaultdict:
+def read_signals(signals: Path) -> dict:
     read_vcd = vcd.VCDVCD(signals, signals=None, store_tvs=True)
     output = {}
 
@@ -63,22 +78,17 @@ def read_signals(signals: Path) -> defaultdict:
 
     return output
 
-def gen_instrtxt(instr: str, instr_file: str):
+def gen_instrtxt(instr: str, instr_file: Path):
     with open(instr_file, "w") as i:
         match instr:
             case "addi":
                 # res x5 = 52
                 i.write("03400293\n") # addi x5 x0 52
-                # instruction result is not written in reg imidiately
-                write_result = "\n".join(["00028293"]*10) # addi x5 x5 0
-                i.write(write_result)
             case "sub":
                 # res: x1 = 5
                 i.write("00800293\n") # addi x5 x0 8
                 i.write("00300113\n") # addi x2 x0 3
                 i.write("402280B3\n") # sub x1 x5 x2
-                write_result = "\n".join(["0x00008093"]*10) # addi x1 x1 0
-                i.write(write_result)
             case "sw":
                 # res MemWrite=1 WriteAddr=52 DataWrite=-34
                 i.write("FDE00113\n") # addi x2 x0 -34
@@ -88,30 +98,22 @@ def gen_instrtxt(instr: str, instr_file: str):
                 i.write("FDE00113\n") # addi x2 x0 -34
                 i.write("02202A23\n") # sw x2 52(x0)
                 i.write("03402383\n") # lw x7 52(x0)
-                write_result = "\n".join(["0x00038393"]*10) # addi x7 x7 0
-                i.write(write_result)
             case "and":
                 # res x7 = 8 & 3
                 i.write("00800293\n") # addi x5 x0 8
                 i.write("00300113\n") # addi x2 x0 3
                 i.write("0022F3B3\n") # and x7 x5 x2
-                write_result = "\n".join(["0x00038393"]*10) # addi x7 x7 0
-                i.write(write_result)
             case "or":
                 # res x7 = 8 | 3
                 i.write("00800293\n") # addi x5 x0 8
                 i.write("00300113\n") # addi x2 x0 3
                 i.write("0022E3B3\n") # or x7 x5 x2
-                write_result = "\n".join(["0x00038393"]*10) # addi x7 x7 0
-                i.write(write_result)
             case "jal":
                 # res x5 = 8
                 i.write("00400293\n") # 00: addi x5 x0 4
                 i.write("008003EF\n") # 04: jal x7 8
                 i.write("00428293\n") # 08: addi x5 x5 4 shouldn't execute
                 i.write("00428293\n") # 0C: addi x5 x5 4
-                write_result = "\n".join(["00028293"]*10) # addi x5 x5 0
-                i.write(write_result)
             case "beq":
                 # res x5 = 0B
                 i.write("00400293\n") # 00: addi x5 x0 4
@@ -121,15 +123,11 @@ def gen_instrtxt(instr: str, instr_file: str):
                 i.write("00000463\n") # 10: beq x0 x0 8 # should jump offset
                 i.write("00A10113\n") # 14: addi x2 x2 10
                 i.write("002282B3\n") # 18: add x5 x5 x2
-                write_result = "\n".join(["00028293"]*10) # addi x5 x5 0
-                i.write(write_result)
             case "slt":
                 # res x5 = 0
                 i.write("00400293\n") # addi x5 x0 4
                 i.write("00300113\n") # addi x2 x0 3
                 i.write("0022A2B3\n") # slt x5 x5 x2
-                write_result = "\n".join(["00028293"]*10) # addi x5 x5 0
-                i.write(write_result)
             case "test1": # example from Haris&Haris
                 i.write ("""00500113
 00C00193
@@ -155,8 +153,3 @@ FF718393
 00000013
 00000013
 """)
-
-
-if __name__ == "__main__":
-    read_signals(Path("../dump.vcd"))
-
