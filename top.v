@@ -1,11 +1,14 @@
 
-module top(input wire clk,           output wire[31:0] WriteDataM,
-           input wire reset,         output wire[31:0] ALUResultM
-);
+module top(input wire clk,     output wire[7:0] SEG,
+           input wire btn0,    output wire[7:0] AN,
+           input wire reset
+          );
 
     wire[31:0] PC;
     wire[31:0] InstrF;
     wire[31:0] ReadDataM;
+    wire[31:0] WriteDataM;
+    wire[31:0] ALUResultM;
     wire RegWriteM;
     wire MemWriteM;
     wire[4:0] RdM;
@@ -15,6 +18,8 @@ module top(input wire clk,           output wire[31:0] WriteDataM,
     wire RegWriteW;
     wire[31:0] ResultW;
     wire[4:0] RdW;
+
+    display disp(.clk(clk), .word(PC), .AN(AN), .SEG(SEG));
 
     // instantiate processor and memories
     riscvsingle rvsingle(.clk(clk),              .RegWriteM(RegWriteM),
@@ -45,8 +50,7 @@ module top(input wire clk,           output wire[31:0] WriteDataM,
             .ALUResultM(ALUResultM), .ReadDataW(ReadDataW),
             .ReadDataM(ReadDataM),   .PCPlus4W(PCPlus4W),
             .RdM(RdM),               .ResultSrcW(ResultSrcW),
-            .PCPlus4M(PCPlus4M),
-            .reset(reset)
+            .PCPlus4M(PCPlus4M)
     );
 
     mux3 muxsel(.s0(ALUResultW), .s(ResultSrcW),
