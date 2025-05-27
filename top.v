@@ -39,7 +39,7 @@ module top(input wire clk,     output wire[7:0] SEG,
     imem imem(.a(PC), .rd(InstrF));
 
     dmem dmem(.clk(clk), .we(MemWriteM), .a(ALUResultM),
-              .wd(WriteDataM), .rd(ReadDataM));
+              .wd(WriteDataM), .rd(ReadDataM), .reset(reset));
 
     wire[1:0] ResultSrcW;
     wire[31:0] ALUResultW;
@@ -53,7 +53,8 @@ module top(input wire clk,     output wire[7:0] SEG,
             .ALUResultM(ALUResultM), .ReadDataW(ReadDataW),
             .ReadDataM(ReadDataM),   .PCPlus4W(PCPlus4W),
             .RdM(RdM),               .ResultSrcW(ResultSrcW),
-            .PCPlus4M(PCPlus4M)
+            .PCPlus4M(PCPlus4M),
+            .reset(reset)
     );
 
     mux3 muxsel(.s0(ALUResultW), .s(ResultSrcW),
