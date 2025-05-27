@@ -1,7 +1,8 @@
 
-module top(input wire clk,           output wire[31:0] WriteDataM,
-           input wire reset,         output wire[31:0] ALUResultM
-);
+module top(input wire clk,     output wire[31:0] WriteDataM,
+                               output wire[31:0] ALUResultM,
+           input wire reset
+          );
 
     wire[31:0] PC;
     wire[31:0] InstrF;
@@ -31,7 +32,7 @@ module top(input wire clk,           output wire[31:0] WriteDataM,
     imem imem(.a(PC), .rd(InstrF));
 
     dmem dmem(.clk(clk), .we(MemWriteM), .a(ALUResultM),
-              .wd(WriteDataM), .rd(ReadDataM));
+              .wd(WriteDataM), .rd(ReadDataM), .reset(reset));
 
     wire[1:0] ResultSrcW;
     wire[31:0] ALUResultW;

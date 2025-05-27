@@ -14,10 +14,7 @@ module rwb(input wire clk,                    output wire RegWriteW,
     assign {RegWriteW, ResultSrcW, ReadDataW, ALUResultW, RdW, PCPlus4W} = q;
 
     always @(posedge clk or posedge reset) begin
-        if (reset)
-            q <= 0;
-        else
-            q <= {RegWriteM, ResultSrcM, ReadDataM, ALUResultM, RdM, PCPlus4M};
+        q <= reset? 0 : {RegWriteM, ResultSrcM, ReadDataM, ALUResultM, RdM, PCPlus4M};
     end
 
 
