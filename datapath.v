@@ -47,8 +47,8 @@ module datapath(input wire clk,              output wire[31:0] ALUResultM,
                 .PCF(PC),           .PCPlus4D(PCPlus4D),
                 .PCPlus4F(PCPlus4),
                 .en(~StallD),
-                .reset(FlushD),
-                .clr(reset)
+                .flush(FlushD),
+                .reset(reset)
     );
 
     wire[31:0] rd1D;
@@ -60,7 +60,10 @@ module datapath(input wire clk,              output wire[31:0] ALUResultM,
                .a1(InstrD[19:15]),
                .a2(InstrD[24:20]),
                .a3(RdW),
-               .wd3(ResultW));
+               .wd3(ResultW),
+               .reset(reset)
+             );
+
 
     extend ext(.instr(InstrD[31:7]), .immsrc(ImmSrcD),
                .immext(ImmExtD));
@@ -94,7 +97,8 @@ module datapath(input wire clk,              output wire[31:0] ALUResultM,
               .RdD(InstrD[11:7]),        .ImmExtE(ImmExtE),
               .ImmExtD(ImmExtD),         .PCPlus4E(PCPlus4E),
               .PCPlus4D(PCPlus4D),
-              .reset(FlushE)
+              .flush(FlushE),
+              .reset(reset)
     );
 
     // alu logic
@@ -123,7 +127,8 @@ module datapath(input wire clk,              output wire[31:0] ALUResultM,
               .MemWriteE(MemWriteE),   .ALUResultM(ALUResultM),
               .ALUResultE(ALUResultE), .RdM(RdM),
               .RdE(RdE),               .PCPlus4M(PCPlus4M),
-              .PCPlus4E(PCPlus4E)
+              .PCPlus4E(PCPlus4E),
+              .reset(reset)
     );
 
 endmodule

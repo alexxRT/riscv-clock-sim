@@ -6,7 +6,8 @@ module rmem(input wire clk,                  output wire RegWriteM,
             input wire MemWriteE,            output wire[31:0] ALUResultM,
             input wire[31:0] ALUResultE,         output wire[4:0] RdM,
             input wire[4:0] RdE,             output wire[31:0] PCPlus4M,
-            input wire[31:0] PCPlus4E
+            input wire[31:0] PCPlus4E,
+            input wire reset
 );
 
     reg[127:0] q;
@@ -14,8 +15,8 @@ module rmem(input wire clk,                  output wire RegWriteM,
     assign {RegWriteM, ResultSrcM, WriteDataM,
                MemWriteM, ALUResultM, RdM, PCPlus4M} = q;
 
-    always @(posedge clk) begin
-            q <= {RegWriteE, ResultSrcE, WriteDataE,
+    always @(posedge clk or posedge reset) begin
+            q <= reset ? 0 : {RegWriteE, ResultSrcE, WriteDataE,
                   MemWriteE, ALUResultE, RdE, PCPlus4E};
     end
 
