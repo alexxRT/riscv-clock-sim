@@ -1,6 +1,5 @@
-module display(input clk, input[31:0] word,
+module display(input ce1ms, input[31:0] word,
                output wire[7:0] AN, output wire[7:0] SEG);
-    wire ce1ms;
     reg[3:0] s;
     reg[7:0] an;
     wire[3:0] dig;
@@ -27,7 +26,5 @@ module display(input clk, input[31:0] word,
     end
 
     dec7seg seg7(.dig(dig), .seg(SEG[6:0]));
-
-    gen1ms ms(.clk(clk), .ce1ms(ce1ms));
 
 endmodule

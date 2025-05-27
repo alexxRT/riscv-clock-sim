@@ -13,8 +13,10 @@ reg[5:0] clk_counter = 0;
 assign {PCD, PCPlus4D, InstrD} = q;
 
 always @(posedge clk or posedge reset) begin
-    if (en)
-        q <= (reset | flush) ? 32'h13 : {PCF, PCPlus4F, InstrF};
+    if (reset)
+		  q <= 32'h13;
+	 else if (en)
+        q <= (flush) ? 32'h13 : {PCF, PCPlus4F, InstrF};
 end
 
 

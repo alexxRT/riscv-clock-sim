@@ -24,7 +24,10 @@ assign {RegWriteE, ResultSrcE, MemWriteE, JumpE, BranchE,
        ALUControlE, ALUSrcE, rd1E, rd2E, PCE, Rs1E, Rs2E, RdE, ImmExtE, PCPlus4E} = q;
 
 always @(posedge clk or posedge reset) begin
-    q <= (reset | flush) ? 0 : {RegWriteD, ResultSrcD, MemWriteD, JumpD,
+    if (reset)
+	     q <= 0;
+	 else 
+	     q <= (flush) ? 0 : {RegWriteD, ResultSrcD, MemWriteD, JumpD,
                         BranchD, ALUControlD, ALUSrcD, rd1, rd2,
                         PCD, Rs1D, Rs2D, RdD, ImmExtD, PCPlus4D};
 end

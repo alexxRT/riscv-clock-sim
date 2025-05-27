@@ -24,7 +24,7 @@ module regfile(input wire clk,       output wire[31:0] rd1,
                 REG[i] <= 32'b0;
         end
 
-        if (we && a3 != 0)
+        else if (we && a3 != 0)
             REG[a3] <= wd3;
     end
 

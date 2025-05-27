@@ -23,7 +23,7 @@ module dmem(input clk, output wire[31:0] rd,
                 RAM[i] = 32'b0;
         end
 
-       if (we)
+       else if (we)
             RAM[a[31:2]] <= wd;
     end
 

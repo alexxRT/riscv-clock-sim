@@ -19,18 +19,25 @@ module top(input wire clk,     output wire[7:0] SEG,
     wire[31:0] ResultW;
     wire[4:0] RdW;
 
-    wire[31:0] dispword;
+    wire ce1ms;
+    wire ce1s;
 
-    nextword nw(.clk(clk), .word1(PC), .word2(InstrF), .next(dispword));
-    display disp(.clk(clk), .word(dispword), .AN(AN), .SEG(SEG));
+    wire disp_clk;
+    assign disp_clk = ce1s;
+
+    gen1ms ms(.clk(clk), .ce1ms(ce1ms));
+    gen1ms1s s(.clk(clk), .ce(ce1ms), .ce1s(ce1s));
+
+    //  nextword nw(.clk(clk), .word1(PC), .word2(InstrF), .next(dispword));
+    display disp(.ce1ms(ce1ms), .word(31'hffffffff), .AN(AN), .SEG(SEG));
 
     // instantiate processor and memories
-    riscvsingle rvsingle(.clk(clk),              .RegWriteM(RegWriteM),
+    riscvsingle rvsingle(.clk(disp_clk),              .RegWriteM(RegWriteM),
                          .InstrF(InstrF),        .RdM(RdM),
                          .RegWriteW(RegWriteW),  .PCPlus4M(PCPlus4M),
                          .ResultW(ResultW),      .ALUResultM(ALUResultM),
                          .RdW(RdW),              .ResultSrcM(ResultSrcM),
-                         .reset(reset),          .PC(PC),
+                         .reset(~reset),         .PC(PC),
                                                  .MemWriteM(MemWriteM),
                                                  .WriteDataM(WriteDataM)
 
@@ -38,8 +45,8 @@ module top(input wire clk,     output wire[7:0] SEG,
     // intstantiate both memories - instr and data
     imem imem(.a(PC), .rd(InstrF));
 
-    dmem dmem(.clk(clk), .we(MemWriteM), .a(ALUResultM),
-              .wd(WriteDataM), .rd(ReadDataM), .reset(reset));
+    dmem dmem(.clk(disp_clk), .we(MemWriteM), .a(ALUResultM),
+              .wd(WriteDataM), .rd(ReadDataM), .reset(~reset));
 
     wire[1:0] ResultSrcW;
     wire[31:0] ALUResultW;
@@ -47,14 +54,14 @@ module top(input wire clk,     output wire[7:0] SEG,
     wire[31:0] PCPlus4W;
 
     // writeback stage register
-    rwb rwb(.clk(clk),               .RegWriteW(RegWriteW),
+    rwb rwb(.clk(disp_clk),               .RegWriteW(RegWriteW),
             .RegWriteM(RegWriteM),   .RdW(RdW),
             .ResultSrcM(ResultSrcM), .ALUResultW(ALUResultW),
             .ALUResultM(ALUResultM), .ReadDataW(ReadDataW),
             .ReadDataM(ReadDataM),   .PCPlus4W(PCPlus4W),
             .RdM(RdM),               .ResultSrcW(ResultSrcW),
             .PCPlus4M(PCPlus4M),
-            .reset(reset)
+            .reset(~reset)
     );
 
     mux3 muxsel(.s0(ALUResultW), .s(ResultSrcW),
