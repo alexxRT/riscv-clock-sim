@@ -14,19 +14,31 @@ module rexe(input wire clk,               output wire RegWriteE,
             input wire[4:0] RdD,          output wire[31:0] ImmExtE,
             input wire[31:0] ImmExtD,     output wire[31:0] PCPlus4E,
             input wire[31:0] PCPlus4D,
+            input wire[31:0] InstrD,
             input wire flush,
             input wire reset
 );
 
 reg[255:0] q;
+wire[31:0] InstrE;
+wire flushE;
 
 assign {RegWriteE, ResultSrcE, MemWriteE, JumpE, BranchE,
-       ALUControlE, ALUSrcE, rd1E, rd2E, PCE, Rs1E, Rs2E, RdE, ImmExtE, PCPlus4E} = q;
+       ALUControlE, ALUSrcE, rd1E, rd2E, PCE, Rs1E, Rs2E, RdE, ImmExtE, PCPlus4E, InstrE, flushE} = q;
 
 always @(posedge clk or posedge reset) begin
-    q <= (reset | flush) ? 0 : {RegWriteD, ResultSrcD, MemWriteD, JumpD,
+    q <= (reset | flush) ? flush : {RegWriteD, ResultSrcD, MemWriteD, JumpD,
                         BranchD, ALUControlD, ALUSrcD, rd1, rd2,
-                        PCD, Rs1D, Rs2D, RdD, ImmExtD, PCPlus4D};
+                        PCD, Rs1D, Rs2D, RdD, ImmExtD, PCPlus4D, InstrD, flush};
+end
+
+reg[7:0] icb = 0;
+
+always @(negedge clk) begin
+    if (InstrE != 32'h13 && ~flushE && ~reset) begin
+        $display("%d: [%x]", icb, InstrE);
+        icb <= icb + 1;
+    end
 end
 
 

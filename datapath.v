@@ -97,6 +97,7 @@ module datapath(input wire clk,              output wire[31:0] ALUResultM,
               .RdD(InstrD[11:7]),        .ImmExtE(ImmExtE),
               .ImmExtD(ImmExtD),         .PCPlus4E(PCPlus4E),
               .PCPlus4D(PCPlus4D),
+              .InstrD(InstrD),
               .flush(FlushE),
               .reset(reset)
     );
